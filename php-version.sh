@@ -24,13 +24,18 @@ function php-version {
       then
           return 0
       fi
-      local IFS=.
+      local IFS=".-"
       local i ver1=($1) ver2=($2)
       # fill empty fields in ver1 with zeros
       for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
       do
           ver1[i]=0
       done
+      # if the last part is not a number (version variant), we dont want to select it automatically
+      if ! [[ ${ver2[$((${#ver2[@]}-1))]} =~ ^[0-9]+$ ]]
+      then
+          return 1
+      fi
       for ((i=0; i<${#ver1[@]}; i++))
       do
           if [[ -z ${ver2[i]} ]]
